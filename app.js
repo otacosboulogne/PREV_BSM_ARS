@@ -850,6 +850,8 @@
         const pa = pendingServicesCount(a) > 0 ? 0 : 1;
         const pb = pendingServicesCount(b) > 0 ? 0 : 1;
         if(pa !== pb) return pa - pb;
+        // Équipe : toujours proposer les journées à valider de la plus ancienne à la plus récente.
+        return String(a.date).localeCompare(String(b.date));
       }
       return String(b.date).localeCompare(String(a.date));
     });
@@ -1109,6 +1111,8 @@
       if(!r.ok) throw new Error(r.error || 'Accès équipe invalide.');
       teamRestaurant = r.restaurant || '';
       history = Array.isArray(r.days) ? r.days : [];
+      // Le backend renvoie les plus récentes en premier ; l'accès équipe travaille dans l'ordre chronologique.
+      history.sort((a,b) => String(a.date).localeCompare(String(b.date)));
       if($('teamRestaurantName')) $('teamRestaurantName').textContent = teamRestaurant === 'BSM' ? 'Boulogne-sur-Mer' : teamRestaurant === 'ARS' ? 'Armentières' : '—';
       if($('teamRestaurantTitle')) $('teamRestaurantTitle').textContent = teamRestaurant === 'BSM' ? "O'TACOS BOULOGNE-SUR-MER" : teamRestaurant === 'ARS' ? "O'TACOS ARMENTIÈRES" : "O'TACOS";
       if($('documentsRestaurant')) $('documentsRestaurant').value = teamRestaurant || 'ALL';
@@ -1375,7 +1379,11 @@
     const restaurant = entryPage === 'team' && teamRestaurant ? teamRestaurant : ($('documentsRestaurant') ? $('documentsRestaurant').value : 'ALL');
     const period = $('documentsPeriod') ? $('documentsPeriod').value : 'month';
     const anchor = $('documentsDate') ? ($('documentsDate').value || todayIso()) : todayIso();
-    const rows = (history || []).filter(d => (restaurant === 'ALL' || d.restaurant === restaurant) && dateMatchesPeriod(d.date, anchor, period));
+    const rows = (history || [])
+      .filter(d => (restaurant === 'ALL' || d.restaurant === restaurant) && dateMatchesPeriod(d.date, anchor, period))
+      .sort((a,b) => entryPage === 'team'
+        ? String(a.date).localeCompare(String(b.date))
+        : String(b.date).localeCompare(String(a.date)));
     const tb = $('documentsTable').querySelector('tbody');
     tb.innerHTML = rows.map(d => {
       const m = d.services && d.services.MIDI ? d.services.MIDI.responsible || '—' : '—';
