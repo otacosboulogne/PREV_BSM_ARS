@@ -1333,7 +1333,7 @@
     const labels = points.map(p => formatDateShort(p.date));
     const datasets = [];
 
-    if($('toggleInpulse').checked) datasets.push({label:'Inpulsé', data:points.map(p => p.inpulse), borderColor:'#8a8a8a', backgroundColor:'rgba(138,138,138,.14)', borderWidth:2, tension:.25, pointRadius:3});
+    if($('toggleInpulse').checked) datasets.push({label:'Inpulse', data:points.map(p => p.inpulse), borderColor:'#8a8a8a', backgroundColor:'rgba(138,138,138,.14)', borderWidth:2, tension:.25, pointRadius:3});
     if($('toggleImproved').checked) datasets.push({label:'Prévision ajustée', data:points.map(p => p.improved), borderColor:'#ff7900', backgroundColor:'rgba(255,121,0,.14)', borderWidth:3, tension:.25, pointRadius:3});
     if($('toggleActual').checked) datasets.push({label:'Réel', data:points.map(p => p.hasActual ? p.actual : null), borderColor:'#111111', backgroundColor:'rgba(17,17,17,.08)', borderWidth:3, tension:.25, pointRadius:4});
 
@@ -1759,7 +1759,7 @@
       if(y > 252){ doc.addPage(); y = 18; }
       y = pdfSectionTitle(doc, 'ÉCARTS', y, orange, black);
       y = pdfTable(doc, y,
-        ['Produit','Inpulsé','Prévision ajustée','Réel','Écart'],
+        ['Produit','Inpulse','Prévision ajustée','Réel','Écart'],
         (day.details || []).map(d => {
           const x = a[d.key] || {};
           const inp = num(d.inpulseMidi ?? d.baseMidi)+num(d.inpulseSoir ?? d.baseSoir);
